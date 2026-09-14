@@ -1,6 +1,6 @@
 """Get NVME devices and collect smart-log data from remote hosts"""
 
-from typing import Dict, Tuple, Optional
+from typing import Dict, Tuple, Optional, List
 import re, subprocess, sys
 
 RED: str = "\033[1;31m"
@@ -39,7 +39,7 @@ def run_ssh(host: str, remote_cmd: str) -> subprocess.CompletedProcess:
         timeout=TIMEOUT,
     )
     
-def list_devices(host: str) -> list[str]:
+def list_devices(host: str) -> List[str]:
     """Discover NVMe namespaces on 'host' via 'nvme list' """
     proc = run_ssh(host, "nvme list")
     if proc.returncode:
@@ -72,7 +72,7 @@ def parse_smart_log(text: str) -> dict:
     return fields
 
 
-def get_smart_result(host: str) -> tuple[dict[str, dict], str | None]:
+def get_smart_result(host: str) -> Tuple[dict[str, dict], Optional[str]]:
     try:
         nvmes = list_devices(host)
         if not nvmes:
@@ -114,7 +114,7 @@ def get_smart_result(host: str) -> tuple[dict[str, dict], str | None]:
         return {}, "sush2 not found in PATH"
 
 
-def main(argv: list[str]) -> int:
+def main(argv: List[str]) -> int:
     if not argv:
         print("Use hostname(s) as arg")
         return 2
