@@ -1,6 +1,6 @@
 """Get NVME devices and collect smart-log data from remote hosts"""
 
-
+from typing import Dict, Tuple, Optional
 import re, subprocess, sys
 
 RED: str = "\033[1;31m"
